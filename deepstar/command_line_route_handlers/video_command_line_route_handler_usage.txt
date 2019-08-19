@@ -1,0 +1,96 @@
+<red>Usage - Videos</red>
+
+<red>Insert one YouTube video from one URL</red>
+  $ python main.py insert videos youtube https://www.youtube.com/watch?v=v5NaLxlcpZ0
+  video_id=1, uri=https://www.youtube.com/watch?v=v5NaLxlcpZ0, filename=a7a32a06-4561-45f5-badb-eaf0418be7ab.mp4, description=None
+
+<red>Insert one YouTube video from one URL conditionally loading the video from a local file if it exists (this is useful when testing combinations of commands)</red>
+  $ python main.py insert videos youtube https://www.youtube.com/watch?v=v5NaLxlcpZ0 --file='test.mp4'
+  video_id=1, uri=test.mp4, filename=1171f77d-0183-4c84-aeee-c0ab5699069c.mp4, description=None
+
+<red>Insert one YouTube video from one URL with a description</red>
+  $ python main.py insert videos youtube https://www.youtube.com/watch?v=v5NaLxlcpZ0 --description=example
+  video_id=1, uri=https://www.youtube.com/watch?v=v5NaLxlcpZ0, filename=f605320a-482b-4da6-9179-8e144c435286.mp4, description=example
+
+<red>Insert many Vimeo videos from one file containing a list of URLs (the file may contain a comma separated 2nd column containing descriptions in which case they will be inserted as well)</red>
+  $ echo 'https://vimeo.com/346386036, [DEEPFAKE] Putin on Trump.' >> urls.txt
+  $ echo 'https://vimeo.com/341794473' >> urls.txt
+  $ echo 'https://vimeo.com/257360045' >> urls.txt
+  $ python main.py insert videos vimeo urls.txt
+  video_id=2, uri=https://vimeo.com/346386036, filename=7909a070-245d-471c-af08-a57a7667832c.mp4, description=[DEEPFAKE] Putin on Trump.
+  video_id=3, uri=https://vimeo.com/341794473, filename=955b6df9-1f56-4a8e-8bfb-5ab35e027fa1.mp4, description='Imagine this...' (2019)
+  video_id=4, uri=https://vimeo.com/257360045, filename=dad5a0ca-fb25-42a3-b943-4721ab83ccba.mp4, description=Jimmy Fallon interview his twin! (DeepFakes)
+
+<red>Insert one Vimeo video from one URL</red>
+  $ python main.py insert videos vimeo https://vimeo.com/346386036
+  video_id=1, uri=https://vimeo.com/346386036, filename=3f923345-fc71-4713-aebc-bd61d9c91ed0.mp4, description=Mr. Trumputin (deepfake)
+
+<red>Insert one Vimeo video from one URL with a description</red>
+  $ python main.py insert videos vimeo https://vimeo.com/346386036 --description=example
+  video_id=1, uri=https://vimeo.com/346386036, filename=f605320a-482b-4da6-9179-8e144c435286.mp4, description=example
+
+<red>Insert one low quality Vimeo video from one URL</red>
+  $ python main.py insert videos vimeo https://vimeo.com/346386036 --quality=lq
+  video_id=1, uri=https://vimeo.com/346386036, filename=f605320a-482b-4da6-9179-8e144c435286.mp4, description=None
+
+<red>Insert one video from a file</red>
+  $ python main.py insert videos file niccage.mp4
+  video_id=5, uri=niccage.mp4, filename=992a59cf-2743-4087-9afc-789fa526c837.mp4, description=None
+
+<red>Insert one video from a file with a description</red>
+  $ python main.py insert videos file niccage.mp4 --description=example
+  video_id=1, uri=niccage.mp4, filename=9127a8f0-f1f4-4aa6-bdd1-df4a60da2b32.mp4, description=example
+
+<red>Insert one video from one image (create a single frame video) at 30 frames-per-second and in MP4 format</red>
+  $ python main.py insert videos image niccage.jpg
+  video_id=1, uri=/tmp/tmpl20beawc/video.mp4, filename=18d1ff54-37c6-4962-99d9-1dc472594a47.mp4, description=None
+
+<red>Insert one video from one image repeating the image frame-count times</red>
+  $ python main.py insert videos image niccage.jpg --frame-count=30
+  video_id=1, uri=/tmp/tmprmsf_c4n/video.mp4, filename=0ac5e6a0-d95a-40a0-9e88-9d58c6f914b3.mp4, description=None
+
+<red>Insert one video from one image with a description</red>
+  $ python main.py insert videos image niccage.jpg --description=example
+  video_id=1, uri=/tmp/tmpqozk9tn0/video.mp4, filename=48d9754d-f8fe-40b4-827a-442cddfe6aac.mp4, description=example
+
+<red>Extract frames from one video to one new frame set</red>
+  $ python main.py select videos 1 extract
+  frame_set_id=1, video_id=1
+
+<red>Extract frames from many videos to many new frame sets</red>
+  $ python main.py select videos 1-2,3 extract
+  frame_set_id=1, video_id=1
+  frame_set_id=2, video_id=2
+  frame_set_id=3, video_id=3
+
+<red>Extract frames from one video to one new frame set subsampling every Nth frame</red>
+  $ python main.py select videos 1 extract --sub-sample=10
+  frame_set_id=1, video_id=1
+
+<red>Extract frames from one video to one new frame set sampling up to a maximum count of frames</red>
+  $ python main.py select videos 1 extract --max-sample=10
+  frame_set_id=1, video_id=1
+
+<red>Delete one video</red>
+  $ python main.py delete videos 1
+  Video 1 was successfully deleted
+
+<red>Delete many videos</red>
+  $ python main.py delete videos 1-2,3
+  Video 1 was successfully deleted
+  Video 2 was successfully deleted
+  Video 3 was successfully deleted
+
+<red>List videos</red>
+  $ python main.py list videos
+  4 results
+  id | uri | filename | description
+  ---------------------------------
+  2 | https://www.youtube.com/watch?v=v5NaLxlcpZ0 | 0ea28897-d425-4ebc-89af-8270ce1feb87.mp4 | None
+  3 | https://www.youtube.com/watch?v=peFE-OBFrpA | fedca10a-8699-4ee4-9899-815026e3138b.mp4 | None
+  4 | https://www.youtube.com/watch?v=1nU8ouTibnU | 3769a873-afd9-49b2-9e3f-6fd297366ab9.mp4 | None
+  5 | niccage.mp4 | 992a59cf-2743-4087-9afc-789fa526c837.mp4 | None
+
+<red>Execute detection model on one video</red>
+  $ python main.py select videos 1 detect mesonet --face-limit=10 --threshold=0.5
+  Video is a deepfake (0.9166)

@@ -1,0 +1,75 @@
+<red>Usage - Frame Sets</red>
+
+<red>Curate one frame set manually</red>
+  $ python main.py select frame_sets 1 curate manual
+  ...
+
+<red>Merge many frame sets into one frame set</red>
+  $ python main.py select frame_sets 1-2,3 merge
+  frame_set_id=4, video_id=None
+
+<red>Extract transforms from one frame set to one new transform set (clone)</red>
+  $ python main.py select frame_sets 1 extract transform_set
+  transform_set_id=1, name=transform_set, fk_frame_sets=1, fk_prev_transform_sets=None
+
+<red>Extract transforms from many frame sets to many new transform sets (clone)</red>
+  $ python main.py select frame_sets 1-2,3 extract transform_set
+  transform_set_id=1, name=transform_set, fk_frame_sets=1, fk_prev_transform_sets=None
+  transform_set_id=2, name=transform_set, fk_frame_sets=2, fk_prev_transform_sets=None
+  transform_set_id=3, name=transform_set, fk_frame_sets=3, fk_prev_transform_sets=None
+
+<red>Extract transforms from one frame set to one new transform set</red>
+  $ python main.py select frame_sets 1 extract face
+  transform_set_id=1, name=face, fk_frame_sets=1, fk_prev_transform_sets=None
+
+<red>Extract transforms from many frame sets to many new transform sets</red>
+  $ python main.py select frame_sets 1-2,3 extract face
+  transform_set_id=1, name=face, fk_frame_sets=1, fk_prev_transform_sets=None
+  transform_set_id=2, name=face, fk_frame_sets=2, fk_prev_transform_sets=None
+  transform_set_id=3, name=face, fk_frame_sets=3, fk_prev_transform_sets=None
+
+<red>Clone one frame set to one new frame set (rejected frames are cloned as well)</red>
+  $ python main.py select frame_sets 1 clone
+  frame_set=2, video_id=1
+
+<red>Clone many frame sets to many new frame sets (rejected frames are cloned as well)</red>
+  $ python main.py select frame_sets 1-2,3 clone
+  frame_set=4, video_id=1
+  frame_set=5, video_id=2
+  frame_set=6, video_id=3
+
+<red>Insert one frame set from many images</red>
+  $ python main.py insert frame_sets images directory/
+  frame_set_id=1, video_id=None
+
+<red>Export one frame set to a directory</red>
+  $ python main.py select frame_sets 1 export dir directory/
+  12 frames were succesfully exported to directory/
+
+<red>Export one frame set to a directory formatting each exported frame's filename</red>
+  $ python main.py select frame_sets 1 export dir directory/ --format='frame%04d.jpg'
+  12 frames were succesfully exported to directory/
+
+<red>Export many transform sets to a directory</red>
+  $ python main.py select frame_sets 1,2-3 export dir directory/
+  123 frames were succesfully exported to directory/
+
+<red>Delete one frame set (and all frames)</red>
+  $ python main.py delete frame_sets 1
+  Frame set 1 was successfully deleted
+
+<red>Delete many frame sets (and all frames)</red>
+  $ python main.py delete frame_sets 1-2,3
+  Frame set 1 was successfully deleted
+  Frame set 2 was successfully deleted
+  Frame set 3 was successfully deleted
+
+<red>List frame sets</red>
+  $ python main.py list frame_sets
+  100 results
+  id | video_id
+  -------------
+  1 | 2
+  2 | 3
+  3 | 4
+  ...

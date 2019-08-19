@@ -1,0 +1,10 @@
+<red>Usage - Implode</red>
+
+<red>Implode the deepstar path including delete the DB and all files</red>
+  $ python main.py implode
+  Are you sure you want to implode the deepstar path ~/.deepstar/ [y/n]? n
+  The deepstar path was _not_ imploded.
+
+  $ python main.py implode
+  Are you sure you want to implode the deepstar path ~/.deepstar/ [y/n]? y
+  The deepstar path was succesfully imploded.

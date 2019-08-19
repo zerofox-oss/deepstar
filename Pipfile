@@ -1,0 +1,26 @@
+[[source]]
+url = 'https://pypi.python.org/simple'
+verify_ssl = true
+name = 'pypi'
+
+[dev-packages]
+flake8 = '*'
+mock = '*'
+nose = '*'
+pylint = '*'
+
+[packages]
+ansimarkup = '*'
+flask = '*'
+flask_restful = '*'
+imutils = '*'
+keras = '==2.2.4'
+mtcnn = '==0.0.9'
+numpy = '==1.16.1'
+opencv-contrib-python-headless = '*'
+pytube = '*'
+tensorflow = '>=1.14'
+vimeo-dl = '*'
+
+[requires]
+python_version = '3.6.8'

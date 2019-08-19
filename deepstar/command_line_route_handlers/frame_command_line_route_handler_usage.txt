@@ -1,0 +1,11 @@
+<red>Usage - Frames</red>
+
+<red>List frames for one frame set</red>
+  $ python main.py list frame_sets 1 frames
+  123 results
+  id | fk_frame_sets | rejected | (width | height)
+  ------------------------------------------------
+  1 | 1 | 0 | (1280 | 720)
+  2 | 1 | 0 | (1280 | 720)
+  3 | 1 | 0 | (1280 | 720)
+  ...

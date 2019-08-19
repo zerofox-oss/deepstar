@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>TransformSetSelectCurateFlaskApp</title>
+        <style>
+            body {
+                background-color: #333;
+            }
+
+            #checkmark {
+                height: 192px;
+                width: 192px;
+            }
+
+            #frame_set {
+                text-align: center;
+            }
+
+            .frame {
+                background-position: center;
+                background-size: cover;
+                border: 0px solid black;
+                color: white;
+                cursor: pointer;
+                font-family: sans-serif;
+                font-size: 16px;
+                font-weight: bold;
+                height: 192px;
+                margin: 16px;
+                overflow: hidden;
+                padding: 4px;
+                width: 192px;
+            }
+
+            .xmark {
+                height: 192px;
+                opacity: 0.75;
+                pointer-events: none;
+                width: 192px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="frame_set"></div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                var frameSetId = {{transform_set_id}};
+                var hideRejected = true;
+                var pageLength = 1000;
+                var pageLoading = false;
+                var pageOffset = 0;
+                var startFrameId = null;
+                var toggleMultipleFrames = false;
+
+                function xmark() {
+                    var el = document.createElement("img");
+
+                    el.className = "xmark";
+                    el.src = "/static/img/xmark.png";
+
+                    return el;
+                }
+
+                function loadSuccess(data) {
+                    data.forEach(function(frame) {
+                        var el = document.createElement("div");
+
+                        el.id = "frame-" + frame[0];
+                        el.className = "frame";
+                        el.style.display = "inline-block";
+                        el.style.backgroundImage = "url(/transform_sets/" + frame[1] + "/transforms/" + frame[0] + ")";
+
+                        el.frameId = frame[0];
+
+                        el.rejected = frame[4];
+
+                        $(el).attr('rejected', frame[4].toString());
+
+                        el.innerHTML = "" + frame[0];
+
+                        if (el.rejected === 1) {
+                            $(el).hide();
+
+                            el.appendChild(xmark());
+                        }
+
+                        $("#frame_set").append(el);
+                    });
+
+                    pageOffset += pageLength;
+                    
+                    if (data.length === pageLength) {
+                        pageLoading = false;
+                    } else {
+                        var el = document.createElement("img");
+
+                        el.id = "checkmark";
+                        el.src = "/static/img/checkmark.png";
+
+                        $("#frame_set").append(el);
+                    }
+                }
+
+                function loadFailure(jqXHR, textStatus, errorThrown) {
+                    alert("failure");
+
+                    pageLoading = false;
+                }
+
+                function loadPage() {
+                    if (pageLoading === false) {
+                        pageLoading = true;
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/transform_sets/" + frameSetId + "/transforms/",
+                            data: {offset: pageOffset, length: pageLength},
+                            success: loadSuccess,
+                            error: loadFailure
+                        });
+                    }
+                }
+
+                $(window).scroll(function() {
+                    if ($(document).height() - $(window).height() - 100 < $(window).scrollTop()) {
+                        loadPage();
+                    }
+                });
+
+                function toggleFrameSuccess(frame) {
+                    var el = $("#frame-" + frame[0])[0];
+
+                    if (el.rejected === 0) {
+                        el.rejected = 1;
+
+                        $(el).attr('rejected', '1');
+
+                        if (hideRejected === true)
+                            $(el).hide();
+
+                        el.appendChild(xmark());
+                    } else {
+                        el.rejected = 0;
+
+                        $(el).removeAttr('rejected');
+
+                        Array.from(el.getElementsByClassName("xmark")).forEach(function (xmark) {
+                            el.removeChild(xmark);
+                        });
+                    }
+                }
+
+                function toggleFrameFailure(jqXHR, textStatus, errorThrown) {
+                    alert("failure");
+                }
+
+                function toggleFrame(el) {
+                    var rejected = el.rejected === 0 ? 1 : 0;
+
+                    $.ajax({
+                        type: "PUT",
+                        url: "/transform_sets/" + frameSetId + "/transforms/" + el.frameId,
+                        data: JSON.stringify({rejected: rejected}),
+                        contentType: "application/json; charset=utf-8",
+                        success: toggleFrameSuccess,
+                        error: toggleFrameFailure
+                    }); 
+                }
+
+                $(document).on("click", ".frame", function(e) {
+                    if (toggleMultipleFrames == false) {
+                        toggleFrame(e.target);
+                    } else {
+                        if (startFrameId === null) {
+                            startFrameId = e.target.frameId;
+
+                            $("body, .frame").css("cursor", "e-resize");
+                        } else {
+                            var endFrameId = e.target.frameId;
+
+                            if (startFrameId > endFrameId) {
+                                var t = startFrameId;
+                                startFrameId = endFrameId;
+                                endFrameId = t;
+                            }
+
+                            do {
+                                el = document.getElementById("frame-" + startFrameId);
+                                if (el !== null) {
+                                    toggleFrame(el);
+                                }
+
+                                ++startFrameId;
+                            } while (startFrameId <= endFrameId);
+
+                            startFrameId = null;
+
+                            $("body, .frame").css("cursor", "w-resize");
+                        }
+                    }
+                });
+
+                function toggleHideRejected() {
+                    if (hideRejected == true) {
+                        hideRejected = false;
+
+                        $("div[rejected='1']").show();
+                    } else {
+                        hideRejected = true;
+
+                        $("div[rejected='1']").hide();
+                    }
+                }
+
+                $(document).keyup(function(e) {
+                    if (e.key === "1") {
+                        if (toggleMultipleFrames === false) {
+                            toggleMultipleFrames = true;
+
+                            startFrameId = null;
+
+                            $("body, .frame").css("cursor", "w-resize");
+                        } else {
+                            toggleMultipleFrames = false;
+
+                            startFrameId = null;
+
+                            $("body").css("cursor", "auto");
+                            $(".frame").css("cursor", "pointer");
+                        }
+                    } else if (e.key === "2") {
+                        toggleHideRejected();
+                    }
+                });
+
+                loadPage();
+            });
+        </script>
+    </body>
+</html>

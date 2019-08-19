@@ -1,0 +1,121 @@
+<red>Usage - Transform Sets</red>
+
+<red>Curate one transform set automatically</red>
+  $ python main.py select transform_sets 1 curate example --example=example
+  success
+
+<red>Curate many transform sets automatically</red>
+  $ python main.py select transform_sets 1,2-3 curate example --example=example
+  success
+
+<red>Curate one transform set automatically rejecting transforms with width or height less than 'min-size'</red>
+  $ python main.py select transform_sets 1 curate min_size --min-size=200
+  success
+
+<red>Curate one transform set automatically rejecting transforms that are more blurry than 'max-blur'</red>
+  $ python main.py select transform_sets 1 curate max_blur --max-blur=100.0
+  success
+
+<red>Curate one transform set manually</red>
+  $ python main.py select transform_sets 1 curate manual
+  ...
+
+<red>Merge many transform sets into one transform set</red>
+  $ python main.py select transform_sets 1-2,3 merge
+  transform_set_id=4, name=merge, fk_frame_sets=None, fk_prev_transform_sets=None
+
+<red>Merge two transform sets into one transform set with a fade effect</red>
+  $ python main.py select transform_sets 1,2 merge fade --frame-count=30
+  transform_set_id=3, name=fade, fk_frame_sets=None, fk_prev_transform_sets=None
+
+<red>Merge two transform sets into one transform set overlaying transform set 1 onto transform set 2 (transform set 1 must be <= size of transform set 2 and supplied x1 and x2 must make sense relative to size of transform sets 1 and 2)</red>
+  $ python main.py select transform_sets 4,5 merge overlay --x1=0 --y1=0
+  transform_set_id=6, name=overlay, fk_frame_sets=None, fk_prev_transform_sets=None
+
+<red>Merge one transform set and one transparent PNG overlaying the transparent PNG onto each transform in the transform set and at a specified position</red>
+  $ python main.py select transform_sets 1 merge overlay_image --x1=0 --y1=0 --image-path=test.png
+  transform_set_id=2, name=overlay_image, fk_frame_sets=None, fk_prev_transform_sets=None
+
+<red>Extract transforms from one transform set to one new transform set</red>
+  $ python main.py select transform_sets 1 extract example --example=example
+  transform_set_id=2, name=example, fk_frame_sets=1, fk_prev_transform_sets=1
+
+<red>Extract transforms from many transform sets to many new transform sets</red>
+  $ python main.py select transform_sets 1-2,3 extract example --example=example
+  transform_set_id=4, name=example, fk_frame_sets=1, fk_prev_transform_sets=1
+  transform_set_id=5, name=example, fk_frame_sets=1, fk_prev_transform_sets=2
+  transform_set_id=6, name=example, fk_frame_sets=1, fk_prev_transform_sets=3
+
+<red>Extract transforms from one transform set to one new transform set resizing any transforms with width or height greater than max-size to max-size (proportionally)</red>
+  $ python main.py select transform_sets 1 extract max_size --max-size=123
+  transform_set_id=2, name=max_size, fk_frame_sets=1, fk_prev_transform_sets=1
+
+<red>Extract transforms from one transform set to one new transform set with each transform padded to a width and height equal to 'size'</red>
+  $ python main.py select transform_sets 1 extract pad --size=123
+  transform_set_id=2, name=pad, fk_frame_sets=1, fk_prev_transform_sets=1
+
+<red>Extract transforms from one transform set to one new transform set cropping each transform (x1, y1 represent top left, x2, y2 represent bottom right)</red>
+  $ python main.py select transform_sets 1 extract crop --x1=0 --y1=0 --x2=50 --y2=50
+  transform_set_id=2, name=crop, fk_frame_sets=1, fk_prev_transform_sets=1
+
+<red>Extract transforms from one transform set to one new transform set slicing from the start transform ID to the end transform ID (inclusive) skipping any rejected transforms</red>
+  $ python main.py select transform_sets 1 extract slice --start=2 --end=4
+  transform_set_id=2, name=crop, fk_frame_sets=1, fk_prev_transform_sets=1
+
+<red>Extract mouths from a transform set into a new transform set</red>
+  $ python main.py select transform_sets 1 extract mouth --offset-percent=20
+  transform_set_id=2, name=crop, fk_frame_sets=1, fk_prev_transform_sets=1
+
+<red>Extract transforms from one transform set to one new transform set adjusting the color of each transform</red>
+  $ python main.py select transform_sets 1 extract adjust_color --r=+10 --g=-10 --b=+10
+  transform_set_id=2, name=adjust_color, fk_frame_sets=1, fk_prev_transform_sets=1
+
+<red>Clone one transform set to one new transform set (rejected frames are cloned as well)</red>
+  $ python main.py select transform_sets 1 clone
+  transform_set_id=2, name=face, fk_frame_sets=1, fk_prev_transform_sets=1
+
+<red>Clone many transform sets to many new transform sets (rejected frames are cloned as well)</red>
+  $ python main.py select transform_sets 1-2,3 clone
+  transform_set_id=4, name=face, fk_frame_sets=1, fk_prev_transform_sets=1
+  transform_set_id=5, name=face, fk_frame_sets=2, fk_prev_transform_sets=2
+  transform_set_id=6, name=face, fk_frame_sets=3, fk_prev_transform_sets=3
+
+<red>Export one transform set to a directory</red>
+  $ python main.py select transform_sets 1 export dir directory/
+  12 transforms were succesfully exported to directory/
+
+<red>Export one transform set to a directory formatting each exported transform's filename</red>
+  $ python main.py select transform_sets 1 export dir directory/ --format='frames%04d.jpg'
+  12 transforms were succesfully exported to directory/
+
+<red>Export many transform sets to a directory</red>
+  $ python main.py select transform_sets 1,2-3 export dir directory/
+  123 transforms were succesfully exported to directory/
+
+<red>Export one transform set to a video file</red>
+  $ python main.py select transform_sets 1 export video directory/
+  1 videos were succesfully exported to directory/
+
+<red>Export many transform sets to many video files</red>
+  $ python main.py select transform_sets 1,2-3 export video directory/
+  3 videos were succesfully exported to directory/
+
+<red>Delete one transform set (and all transforms)</red>
+  $ python main.py delete transform_sets 1
+  Transform set 1 was successfully deleted
+
+<red>Delete many transform sets (and all transform)</red>
+  $ python main.py delete transform_sets 1-2,3
+  Transform set 1 was successfully deleted
+  Transform set 2 was successfully deleted
+  Transform set 3 was successfully deleted
+
+<red>List transform sets</red>
+  $ python main.py list transform_sets
+  4 results
+  id | name | fk_frame_sets | fk_prev_transform_sets
+  --------------------------------------------------
+  1 | face | 1 | None
+  2 | max_size | 1 | 1
+  3 | pad | 1 | 2
+  4 | face | 2 | None
