@@ -113,9 +113,14 @@ class MesoNetVideoSelectDetectPlugin(DetectorBase):
                 face_crop = imutils.resize(face_crop, width=256)
             fc_height, fc_width = face_crop.shape[:2]
 
+            # pad the face image to 256x256
             img_padded = np.zeros((256, 256, 3), dtype=np.uint8)
             img_padded[:fc_height, :fc_width, :] = face_crop.copy()
 
-            faces.append(img_padded)
-        
+            # scale the pixels
+            img_scaled = np.asarray(img_padded, dtype=np.float64)
+            img_scaled /= (np.std(img_scaled, keepdims=True) + 1e-6)
+    
+            faces.append(img_scaled)
+
         return faces

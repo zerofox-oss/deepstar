@@ -485,7 +485,7 @@ class VideoCommandLineRouteHandler(CommandLineRouteHandler):
                 f"'{model_name}' is not a valid video select detect plugin name")
 
         video_path = VideoFile.path(result[2])
-        plugin().video_select_detect(video_path, **opts)
+        plugin().video_select_detect(video_path, opts)
 
     def usage(self):
         """
